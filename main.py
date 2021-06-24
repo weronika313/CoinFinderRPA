@@ -1,5 +1,6 @@
 import random
 import re
+import time
 
 import rpa as r
 import csv
@@ -10,19 +11,14 @@ import requests
 BASE_URL = "https://www.metalmarket.eu/"
 
 
-headers_lists =(
-
-'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) '
-
-'Chrome/65.0.3325.181 Safari/537.36',
-
-'Mozilla/4.0(compatible;MSIE7.0;WindowsNT5.1;Maxthon2.0',
-
-'Opera/9.80(Android2.3.4;Linux;Operamobi/adr-1107051709;U;zh-cn)Presto/2.8.149Version/11.10',
-
-'Mozilla/5.0(WindowsNT6.1;rv:2.0.1)Gecko/20100101Firefox/4.0.1',
-
-'Mozilla/5.0(Android;Linuxarmv7l;rv:5.0)Gecko/Firefox/5.0fennec/5.0',)
+headers_lists = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/65.0.3325.181 Safari/537.36",
+    "Mozilla/4.0(compatible;MSIE7.0;WindowsNT5.1;Maxthon2.0",
+    "Opera/9.80(Android2.3.4;Linux;Operamobi/adr-1107051709;U;zh-cn)Presto/2.8.149Version/11.10",
+    "Mozilla/5.0(WindowsNT6.1;rv:2.0.1)Gecko/20100101Firefox/4.0.1",
+    "Mozilla/5.0(Android;Linuxarmv7l;rv:5.0)Gecko/Firefox/5.0fennec/5.0",
+)
 
 
 def enter_tab_with_coins():
@@ -75,13 +71,14 @@ def get_all_coins_on_page(coins_soup, coins):
 
 def get_coin(coin_url):
     coin_soup = load_page(coin_url)
+    time.sleep(0.5)
     table_with_inf_about_coin = coin_soup.find("table", class_="n54117_dictionary")
     coin = collect_information_about_coin(coin_soup, table_with_inf_about_coin)
     return coin
 
 
 def load_page(page_url):
-    page = requests.get(page_url, headers = {'User-Agent':random.choice(headers_lists)})
+    page = requests.get(page_url, headers={"User-Agent": random.choice(headers_lists)})
     if not page:
         return None
 
@@ -109,7 +106,6 @@ def get_coin_name(coin_soup):
     try:
         coin_name = coin_soup.find("div", class_="projector_navigation")
         coin_name = coin_name.find("h1").text.strip()
-        print(coin_name)
     except AttributeError:
         coin_name = "Unknown"
 
@@ -212,7 +208,7 @@ def save_coins_in_csv(coins):
         "Rant",
         "Producent",
     ]
-    with open("Coins.csv", "w", encoding='utf-8') as csvfile:
+    with open("Coins.csv", "w", encoding="utf-8") as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=field_names)
         writer.writeheader()
         writer.writerows(coins)
@@ -235,4 +231,3 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(f"Error message: {e}")
-
