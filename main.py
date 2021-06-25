@@ -217,9 +217,6 @@ def save_coins_in_csv(coins):
 # Press the green button in the gutter to run the script.
 if __name__ == "__main__":
 
-    r.init()
-    r.url(BASE_URL)
-
     try:
         r.init()
         r.url(BASE_URL)
